@@ -1,0 +1,283 @@
+---
+title: "An Applied Approach to Sentiment Analysis:  IT Support Tickets"
+author: "Johnny Rodriguez"
+date: "2022-11-19"
+output:   
+  ioslides_presentation:
+    widescreen: true
+    smaller: false
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+
+library(tidyverse)
+library(readr)
+library(sentimentr)
+library(ggplot2)
+library(lubridate)
+library(knitr)
+library(kableExtra)
+
+
+```
+
+## An Applied Approach to Sentiment Analysis:  IT Support Tickets
+We'll explore sentiment analysis for a 2022  IT Service Desk data set.
+
+
+...And my real-world attempt to address a problem with that IT Service Desk operation
+
+## Background and Context
+I am the manager for IT support services team for faculty, staff and students at a liberal arts college in New York City.  
+
+<br/>
+
+* 1000 faculty and administrative staff  
+* 2600 undergrad students
+* Generate any where from 8,000-10,000 IT service requests per year
+* The data set we are looking at today is from my college / job 
+
+## What makes for a good IT Service Desk and a good organization for its employees?
+
+* The holy grail for a customer support organization (including IT support) is **customer satisfaction**.
+
+* The holy grail for worker retention is **employee satisfaction**.
+
+* To maximize satisfaction, every interaction matters. 
+
+<br/>
+
+> Organizations work best when their customers and their employees are ***happy***.
+
+> But **happy** is hard to measure.
+
+## Conventional Ways to Measure IT Service Desk performance
+
+IT support and service organizations are full of **vanity metrics**
+
+> ***Vanity metrics are metrics that make you look good to others but do not help you understand your own performance in a way that informs future strategies.***
+
+* Average number of tickets assigned / resolved by an analyst
+
+* Average hold time on call
+
+* Average call time duration
+
+* Average time to resolution
+
+<br/>
+
+The key question to identify these is **So What?**
+
+## To illustrate the point...
+
+Vanity metrics don't offer much value, don't lead to decisions or actions & **incentivize wrong behaviors in search of hitting the metric.**
+
+<br/>
+
+```{r img-with-knitr, echo=FALSE, fig.align='center', out.width='100%', fig.cap=''}
+
+knitr::include_graphics("https://raw.githubusercontent.com/johnnydrodriguez/607incontext/main/dogbert.gif")
+
+```
+
+## Customer and Employee Satisfaction Surveys
+
+Customer and employee satisfaction surveys are a common way to try to assess customer and employee happiness.  
+
+> "How did we do?"
+
+> "Rate us a 5"
+
+
+## But...
+These surveys tend to suffer from all sorts of response biases.
+```{r img-with-knitr2, echo=FALSE, fig.align='center', out.width='70%', fig.cap=''}
+
+knitr::include_graphics("https://raw.githubusercontent.com/johnnydrodriguez/607incontext/main/service.png")
+
+```
+
+## Enter Sentiment Analysis
+
+* In the process of exploring sentiment analysis as an alternative to this method.  
+
+* Up until now, we had been focused on improving the survey mechanism.
+
+* Sentiment analysis allows for a more detailed understanding on 'sentiment' at a per ticket/per customer / per employee level.
+
+* The analysis can be performed across the entire data set - i.e.,  all tickets in the dataset.
+
+* The analyst can be done in with tickets that are still open or recently closed.
+
+
+## A few words about the data set..
+
+* It is from a commercial / enterprise Service Desk ticketing system
+
+* It contains all tickets opened from Jan 1 2022 - Nov 4, 2022
+
+* Names have been changed to protect the innocent
+
+* For reasons confidentiality and data sensitivity, the dialogue columns have been removed from the dataset before a clean dataset was published to github.  Only the sentence sentiment scores and word counts are included.
+
+
+## A few words about the Sentiment Analysis - SentimentR
+
+
+```{r img-with-knitr3, echo=FALSE, fig.align='center', out.width='100%', fig.cap=''}
+
+knitr::include_graphics("https://raw.githubusercontent.com/johnnydrodriguez/607incontext/main/sentimentr.png")
+
+```
+
+## The Customer & Analyst Dialogue 
+```{r img-with-knitr4, echo=FALSE, fig.align='center', out.width='90%', fig.cap=''}
+
+knitr::include_graphics("https://raw.githubusercontent.com/johnnydrodriguez/607incontext/main/example_dialogue.png")
+
+```
+
+## Original Source Data
+1. The original data set was imported from a local file.  
+2. The dialogue columns were removed.
+```{r img-with-knitr5, echo=FALSE, fig.align='center', out.width='80%', fig.cap=''}
+
+knitr::include_graphics("https://raw.githubusercontent.com/johnnydrodriguez/607incontext/main/sourcecode2.png")
+knitr::include_graphics("https://raw.githubusercontent.com/johnnydrodriguez/607incontext/main/sourcedata.png")
+
+```
+
+## Profanity Check
+
+Before the dialogue columns were removed, sentimentr allows for a profanity check
+
+```{r img-with-knitr6, echo=FALSE, fig.align='center', out.width='100%', fig.cap=''}
+
+knitr::include_graphics("https://raw.githubusercontent.com/johnnydrodriguez/607incontext/main/profanitycode.png")
+
+
+```
+
+## Profanity Results
+Abusive language violates the College's code of conduct and HR employee policies.
+
+In my data set, no profanities was discovered when evaluating individual sentences.
+```{r img-with-knitr7, echo=FALSE, fig.align='center', out.width='25%', fig.cap=''}
+
+knitr::include_graphics("https://raw.githubusercontent.com/johnnydrodriguez/607incontext/main/profanitycheck.png")
+
+```
+
+## Exploring IT Support Sentiment
+
+```{r echo = FALSE ,warning = FALSE, message = FALSE}
+
+ticketsdata2022 <- read.csv(
+  "https://raw.githubusercontent.com/johnnydrodriguez/607incontext/main/ticketsdata2022_clean.csv", 
+  na.strings=c("","NA"))
+
+glimpse(ticketsdata2022)
+
+ # knitr::kable(head(ticketsdata2022, n=15,
+ #                   format="latex", longtable = T, booktabs=TRUE))%>%
+ #   kable_styling(font_size = 8)
+
+```
+
+## Distribution of Sentiment Across the IT Organization: Overall Positive
+
+```{r echo=FALSE, fig.align='center', out.width='90%', fig.cap=''}
+# Density plot distribution of sentiment scores
+ticketsdata2022 %>% ggplot() + geom_density(aes(sentiment))+ 
+  ggtitle("IT Support Requests Sentiment Distribution")+ theme_minimal()
+```
+
+## Distribution of Sentiment by IT Group: Overall Positive
+```{r echo=FALSE, fig.align='center', out.width='90%', fig.cap=''}
+ticketsdata2022 %>% ggplot() + geom_density(aes(sentiment))+
+  ggtitle("IT Support Requests Sentiment Distribution by IT Group")+
+  facet_wrap(~ assignment_group)+theme_minimal()
+```
+
+## Sentiment Range: A Rollercoaster
+
+```{r fig.align='center', out.width='90%', fig.cap=''}
+#Boxplot
+ticketsdata2022 %>% ggplot() + geom_boxplot(aes(x = sentiment, y = assignment_group))+
+   ggtitle("IT Support Requests Sentiment Range")
+```
+
+## Opportunity:  Neutral Sentiment
+```{r fig.align='center', out.width='90%', fig.cap=''}
+
+ticketsdata2022  %>%
+  mutate(polarity_level = case_when(sentiment == 0 ~ "Neutral",
+                                    sentiment > 0 ~ "Positive",
+                                    sentiment < 0 ~ "Negative"))%>% 
+  count(assignment_group, polarity_level) %>% 
+  mutate(prop = prop.table(n)*100) %>%
+  ggplot() + geom_col(aes(x = reorder(assignment_group, prop), y = prop, fill = polarity_level))+
+  ggtitle("Sentiment Polarity by Group")+
+  theme(axis.text.x = element_text(angle=90, vjust=.5, hjust=.33))+
+  coord_flip()
+
+```
+
+## Sentiment for Service Desk Analysts
+
+```{r fig.align='center', out.width='90%', fig.cap=''}
+ticketsdata2022  %>%
+  filter(assigned_to %in% c( "John", "Nora", "Paul", "Justin", "Vicky", "Brian", "Ray", "Laura")) %>% 
+  mutate(polarity_level = case_when(sentiment == 0 ~ "Neutral",
+                                    sentiment > 0 ~ "Positive",
+                                    sentiment < 0 ~ "Negative")) -> sdsentiment
+
+sdsentiment %>% 
+  count(assigned_to, polarity_level) %>% 
+  mutate(prop = prop.table(n)*100) %>% 
+  ggplot() + geom_col(aes(x = reorder(assigned_to, prop), y = prop, fill = polarity_level))+
+  theme_minimal()+
+  coord_flip()
+
+```
+
+## Nora's Negative Sentiment Tickets
+
+Is it Nora?  Is it the customer?  Is the technology?
+
+(When joined to the original data), a list of actionable tickets for followup.
+
+<br/>
+
+```{r img-with-knitr8, echo=FALSE, fig.align='center', out.width='100%', fig.cap=''}
+
+
+knitr::include_graphics("https://raw.githubusercontent.com/johnnydrodriguez/607incontext/main/sampleresults.png")
+
+
+
+```
+
+## Sentiment Analysis Opens Up Avenues of Exploration
+
+* By Analyst / IT Group
+
+* By Customer / Customer Group (Projects, Special Initiatives)
+
+* By Academic or Administrative Dept (HR, History, etc)
+
+* By Support Category (Hardware, Software, Password, etc)
+
+* By Seasonality/Time (Term Start, Midterms, Finals, etc)
+
+
+
+## Conclusions (and Takeaways from my experience)
+
+* At least in this use case, sentiment analysis is a superior way to identify areas for improvement -- but further vetting is needed.
+
+* Domain expertise is important to identify areas of focus which may warrant further analysis & which areas do not.
+
+* Sentiment analysis allowed us to detect negative sentiments over shorter intervals of time and while they were occurring.
