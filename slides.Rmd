@@ -1,5 +1,5 @@
 ---
-title: "An Applied Approach to Sentiment Analysis:  IT Support Tickets"
+title: "Applied Sentiment Analysis:  IT Support Tickets"
 author: "Johnny Rodriguez"
 date: "2022-11-19"
 output:   
@@ -22,11 +22,11 @@ library(kableExtra)
 
 ```
 
-## An Applied Approach to Sentiment Analysis:  IT Support Tickets
-We'll explore sentiment analysis for a 2022  IT Service Desk data set.
+## Applied Sentiment Analysis:  IT Support Tickets
+We'll explore sentiment analysis for a 2022  IT Service Desk data set containing 6900 IT support tickets/requests.
 
 
-...And my real-world attempt to address a problem with that IT Service Desk operation
+...And my real-world attempt to address a critical function of that IT Service Desk.
 
 ## Background and Context
 I am the manager for IT support services team for faculty, staff and students at a liberal arts college in New York City.  
@@ -188,14 +188,14 @@ glimpse(ticketsdata2022)
 
 ## Distribution of Sentiment Across the IT Organization: Overall Positive
 
-```{r echo=FALSE, fig.align='center', out.width='90%', fig.cap=''}
+```{r echo=FALSE, fig.align='center', out.width='80%', fig.cap=''}
 # Density plot distribution of sentiment scores
 ticketsdata2022 %>% ggplot() + geom_density(aes(sentiment))+ 
   ggtitle("IT Support Requests Sentiment Distribution")+ theme_minimal()
 ```
 
 ## Distribution of Sentiment by IT Group: Overall Positive
-```{r echo=FALSE, fig.align='center', out.width='90%', fig.cap=''}
+```{r echo=FALSE, fig.align='center', out.width='80%', fig.cap=''}
 ticketsdata2022 %>% ggplot() + geom_density(aes(sentiment))+
   ggtitle("IT Support Requests Sentiment Distribution by IT Group")+
   facet_wrap(~ assignment_group)+theme_minimal()
